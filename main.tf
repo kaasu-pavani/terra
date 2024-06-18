@@ -1,6 +1,8 @@
+#provider.tf
 provider "aws" {
   region     = "us-east-1"
-  }
+ }
+
 #vpc.tf
 resource "aws_vpc" "main" {
   cidr_block       = var.vpc_cidr
@@ -23,8 +25,10 @@ resource "aws_subnet" "main" {
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 }
+
 #creating Route table
-resource "aws_route_table" "main" { vpc_id = aws_vpc.main.id
+resource "aws_route_table" "main" {
+  vpc_id = aws_vpc.main.id
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main.id
@@ -40,7 +44,7 @@ resource "aws_route_table_association" "subnet_assoc" {
   route_table_id = aws_route_table.main.id
 }
 # Creating Security Group
-resource "aws_security_group" "wordpress_sg" {
+resource "aws_security_group" "tf_sg" {
   vpc_id = aws_vpc.main.id
   # Inbound Rules
   # HTTP access from anywhere
@@ -50,9 +54,9 @@ resource "aws_security_group" "wordpress_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
- ingress {
-    from_port   = 8080
-    to_port     = 8080  
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -70,17 +74,6 @@ resource "aws_security_group" "wordpress_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  # MYSQL access from anywhere
-  ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  # MYSQL access from anywhere
-  ingress { 
-  cidr_blocks = ["0.0.0.0/0"]
-  }
   # Outbound Rules
   # Internet access to anywhere
   egress {
@@ -93,6 +86,8 @@ resource "aws_security_group" "wordpress_sg" {
     Name = "Web SG"
   }
 }
+
+
 # Defining CIDR Block for VPC
 variable "vpc_cidr" {
   default = "10.0.0.0/16"
@@ -100,28 +95,26 @@ variable "vpc_cidr" {
 # Defining CIDR Block for Subnet
 variable "subnet_cidr" {
   default = "10.0.1.0/24"
-} 
+}
+
 # Creating EC2 instance
-resource "aws_instance"  "wordpress_instance" {
+resource "aws_instance" "terraform_instance" {
   ami                         = "ami-08a0d1e16fc3f61ea"
   instance_type               = "t2.micro"
   count                       = 1
   key_name                    = "test"
-  vpc_security_group_ids      = [aws_security_group.wordpress_sg.id]
+  vpc_security_group_ids      = ["${aws_security_group.tf_sg.id}"]
   subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
   user_data                   = file("user.sh")
   tags = {
-    Name = "Wordpress_Instance"
+    Name = "terraform_instance"
   }
 }
+
+
+
 output "public_ip" {
-  value = aws_instance.wordpress_instance[*].public_ip
+  value = aws_instance.terraform_instance[*].public_ip
 }
-                                            
-                          
-   
-    
-
-
                                         
