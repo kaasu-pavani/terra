@@ -1,7 +1,6 @@
 provider "aws" {
   region     = "ap-south-1"
-  access_key = ""
-  secret_key = ""
+  }
 #vpc.tf
 resource "aws_vpc" "main" {
   cidr_block       = var.vpc_cidr
@@ -101,7 +100,7 @@ variable "subnet_cidr" {
   default = "10.0.1.0/24"
 }
  count                       = 1
-  key_name                    = "pavani-20-key"
+  key_name                    = "test"
   vpc_security_group_ids      = [aws_security_group.wordpress_sg.id]
   subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
@@ -110,8 +109,8 @@ variable "subnet_cidr" {
     Name = "Wordpress_Instance"
   }
 }
-resource "aws_key_pair" "pavani20" {
-  key_name   = "pavani20-key"
+resource "aws_key_pair" "test" {
+  key_name   = "test"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohBK41 email@example.com"
 }
 
@@ -121,10 +120,10 @@ output "public_ip" {
 
 # Creating EC2 instance
 resource "aws_instance" "wordpress_instance" {
-  ami                         = "ami-013e83f579886baeb"
+  ami                         = "ami-08a0d1e16fc3f61ea"
   instance_type               = "t2.micro"
    count                       = 1
-  key_name                    = "pavani-20-key"
+  key_name                    = "test"
   vpc_security_group_ids      = [aws_security_group.wordpress_sg.id]
   subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
@@ -134,7 +133,7 @@ resource "aws_instance" "wordpress_instance" {
   }
 }
 resource "aws_key_pair" "pavani20" {
-  key_name   = "pavani20-key"
+  key_name   = "test"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohBK41 email@example.com"
 }
 
