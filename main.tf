@@ -100,19 +100,7 @@ variable "vpc_cidr" {
 variable "subnet_cidr" {
   default = "10.0.1.0/24"
 }
- count                       = 1
-  key_name                    = "test"
-  vpc_security_group_ids      = [aws_security_group.wordpress_sg.id]
-  subnet_id                   = aws_subnet.main.id
-  associate_public_ip_address = true
-  user_data                   = file("user.sh")
-  tags = {
-    Name = "Wordpress_Instance"
-  }
-}
-output "public_ip" {
-  value = aws_instance.wordpress_instance[*].public_ip
-}
+ 
 # Creating EC2 instance
 resource "aws_instance" "wordpress_instance" {
   ami                         = "ami-08a0d1e16fc3f61ea"
