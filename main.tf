@@ -1,6 +1,6 @@
 #provider.tf
 provider "aws" {
-  region     = "us-east-1"
+  region     = "us-west-1"
  }
 
 #vpc.tf
@@ -16,7 +16,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "main" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.subnet_cidr
-  availability_zone = "us-east-1a"
+  availability_zone = "us-west-1a"
   tags = {
     Name = "subnet"
   }
@@ -99,10 +99,10 @@ variable "subnet_cidr" {
 
 # Creating EC2 instance
 resource "aws_instance" "terraform_instance" {
-  ami                         = "ami-08a0d1e16fc3f61ea"
+  ami                         = "ami-0ca1f30768d0cf0e1"
   instance_type               = "t2.micro"
   count                       = 1
-  key_name                    = "test"
+  key_name                    = "fourth project"
   vpc_security_group_ids      = ["${aws_security_group.tf_sg.id}"]
   subnet_id                   = aws_subnet.main.id
   associate_public_ip_address = true
